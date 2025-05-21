@@ -63,7 +63,7 @@ npm start
 
 #### Signup
 
-**POST** `/api/signup`
+**POST** `/api/auth/signup`
 
 ```json
 {
@@ -83,7 +83,7 @@ npm start
 
 #### Login
 
-**POST** `/api/login`
+**POST** `/api/auth/login`
 
 ```json
 {
