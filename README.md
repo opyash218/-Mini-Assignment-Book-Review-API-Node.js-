@@ -1,146 +1,192 @@
 
-
 # Book Review API
 
-A RESTful API for managing books and reviews with JWT-based authentication.
+This is a backend REST API for managing books and their reviews using **Node.js**, **Express.js**, **MongoDB**, and **JWT-based authentication**.
 
 ---
 
-## Tech Stack
+## 🚀 Features
 
-- Node.js with Express.js
-- MongoDB (Mongoose)
-- JSON Web Tokens (JWT) for authentication
+* **User Authentication**: Signup and login using JWT.
+* **Book Management**: Add, view, and filter books with pagination.
+* **Reviews**: Authenticated users can post, update, and delete reviews.
+* **Search Functionality**: Search books by partial title or author (case-insensitive).
 
 ---
 
-## Project Setup Instructions
+## 📌 Project Setup Instructions
 
-1. **Clone the repository**
-
-   ```bash
-   git clone <your-repo-url>
-   cd <your-project-folder>
-
-Install dependencies
-
-bash
-Copy
-Edit
-npm install
-Configure environment variables
-
-Create a .env file in the root directory with the following variables:
-
-env
-Copy
-Edit
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/bookreviewdb
-JWT_SECRET=your_jwt_secret_key
-Start MongoDB
-
-Make sure your MongoDB server is running locally or provide a remote connection URI.
-
-How to Run Locally
-Start the server with:
-
-bash
-Copy
-Edit
-npm start
-Server runs on http://localhost:5000
-
-Example API Requests
-1. User Registration (Signup)
-bash
-Copy
-Edit
-curl -X POST http://localhost:5000/api/signup \
--H "Content-Type: application/json" \
--d '{"username":"john", "email":"john@example.com", "password":"password123"}'
-Response:
-
-json
-Copy
-Edit
-{
-  "message": "User registered successfully",
-  "token": "<jwt_token>"
-}
-2. User Login
-bash
-Copy
-Edit
-curl -X POST http://localhost:5000/api/login \
--H "Content-Type: application/json" \
--d '{"email":"john@example.com", "password":"password123"}'
-Response:
-
-json
-Copy
-Edit
-{
-  "message": "Login successful",
-  "token": "<jwt_token>"
-}
-3. Add a Book (Authenticated)
-bash
-Copy
-Edit
-curl -X POST http://localhost:5000/api/books \
--H "Authorization: Bearer <jwt_token>" \
--H "Content-Type: application/json" \
--d '{"title":"The Hobbit", "author":"J.R.R. Tolkien", "genre":"Fantasy"}'
-4. Get All Books (with optional filtering and pagination)
-bash
-Copy
-Edit
-curl "http://localhost:5000/api/books?author=J.K.%20Rowling&page=1&limit=10"
-5. Get Book Details by ID
-bash
-Copy
-Edit
-curl http://localhost:5000/api/books/<book_id>
-
-
-6. Add a Review to a Book (Authenticated)
-
-curl -X POST http://localhost:5000/api/books/<book_id>/reviews \
--H "Authorization: Bearer <jwt_token>" \
--H "Content-Type: application/json" \
--d '{"rating":5, "comment":"Amazing book!"}'
-
-
-7. Search Books by Title or Author
+### 1️⃣ Clone the Repository
 
 ```bash
-curl "http://localhost:5000/api/books/search?q=Auther-name or Book name"
+git clone https://github.com/opyash218/-Mini-Assignment-Book-Review-API-Node.js-.git
+cd book-review-api
 ```
 
+### 2️⃣ Install Dependencies
 
-Design Decisions and Assumptions
+```bash
+npm install
+```
 
-JWT Authentication:
-Used for stateless authentication; tokens returned on signup/login and required for protected routes.
+### 3️⃣ Create Environment Variables
 
-MongoDB with Mongoose:
-Chosen for flexible schema and ease of handling nested documents (reviews linked to books).
+Create a `.env` file in the root folder:
 
-Reviews linked to books:
-Each review references a book by its ObjectId to allow aggregation and efficient lookups.
+```env
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/bookreviewdb
+JWT_SECRET=your_jwt_secret
+```
 
-Endpoints structure:
-Clear separation between books and reviews, with review operations nested under books.
+### 4️⃣ Start MongoDB (if local)
 
-Data validation and error handling:
-Basic validation on required fields and proper HTTP status codes returned for errors.
+Ensure MongoDB is running:
 
-Pagination:
-Implemented on list endpoints to limit response size and improve performance.
+```bash
+mongod
+```
 
-Case-insensitive, partial search:
-Search supports regex matching on title or author fields.
+### 5️⃣ Run the Server
 
-One review per user per book:
-Enforced in backend to prevent duplicate reviews by the same user on a single book.
+```bash
+npm start
+```
+
+> API will be available at: `http://localhost:5000/`
+
+---
+
+## 📢 API Endpoints
+
+### 🔹 Auth Endpoints
+
+#### Signup
+
+**POST** `/api/signup`
+
+```json
+{
+  "username": "john",
+  "email": "john@example.com",
+  "password": "secret123"
+}
+```
+
+*Response:*
+
+```json
+{
+  "message": "User registered successfully"
+}
+```
+
+#### Login
+
+**POST** `/api/login`
+
+```json
+{
+  "email": "john@example.com",
+  "password": "secret123"
+}
+```
+
+*Response:*
+
+```json
+{
+  "token": "<jwt_token>",
+  "message": "Login successful"
+}
+```
+
+---
+
+### 🔹 Books Endpoints
+
+#### Add a Book (Authenticated)
+
+**POST** `/api/books`
+
+```json
+{
+  "title": "The Hobbit",
+  "author": "J.R.R. Tolkien",
+  "genre": "Fantasy"
+}
+```
+
+*Headers:* `Authorization: Bearer <token>`
+
+#### Get All Books
+
+**GET** `/api/books?page=1&limit=5&author=tolkien&genre=fantasy`
+
+#### Get Book by ID (with Reviews)
+
+**GET** `/api/books/:id`
+
+#### Search Books
+
+**GET** `/api/books/search?q=harry`
+
+---
+
+### 🔹 Reviews Endpoints
+
+#### Add Review (Authenticated)
+
+**POST** `/api/books/:id/reviews`
+
+```json
+{
+  "rating": 5,
+  "comment": "Excellent read!"
+}
+```
+
+*Headers:* `Authorization: Bearer <token>`
+
+#### Update Review (Authenticated)
+
+**PUT** `/api/reviews/:id`
+
+```json
+{
+  "rating": 4,
+  "comment": "Updated review"
+}
+```
+
+#### Delete Review (Authenticated)
+
+**DELETE** `/api/reviews/:id`
+
+---
+
+## 📂 Design Decisions & Assumptions
+
+* **JWT Token on Signup/Login**: Token is returned immediately so user can access protected routes.
+* **One Review per Book per User**: Prevents multiple reviews from the same user.
+* **MongoDB**: Used for flexible and scalable document storage.
+* **Error Handling**: Clean error responses and status codes.
+* **Case-insensitive Search**: Uses regex for partial matches on title and author.
+
+---
+
+## 🌐 API Testing with Postman
+
+* Base URL: `http://localhost:5000/api`
+* Use the token returned from `/signup` or `/login` in `Authorization` header:
+
+  * `Authorization: Bearer <token>`
+
+---
+
+## 🧱 Contact
+
+For any issues or questions, contact: **yashsatyajit38@gmail.com**
+
+---
+
